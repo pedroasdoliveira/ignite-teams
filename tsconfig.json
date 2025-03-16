@@ -11,6 +11,10 @@
       "@storage/*": ["./src/storage/*"],
       "@theme/*": ["./src/theme/*"],
       "@utils/*": ["./src/utils/*"]
-    }
+    },
+    "types": [
+      "react-native", 
+      "styled-components-react-native"
+    ]
   }
 }
