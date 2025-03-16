@@ -9,6 +9,10 @@ export const Container = styled.View`
     background-color: ${({ theme }: {theme: DefaultTheme}) => theme.COLORS.GRAY_600};
 `;
 
-export const LoadIndicator = styled.ActivityIndicator.attrs(({ theme }: {theme: DefaultTheme}) => ({
-    color: theme.COLORS.GREEN_700
-}));
+export const LoadIndicator = styled.ActivityIndicator`
+    color: ${({ theme }: {theme: DefaultTheme}) => theme.COLORS.GREEN_700};
+`;
+
+// export const LoadIndicator = styled.ActivityIndicator.attrs(({ theme }: {theme: DefaultTheme}) => ({
+//     color: theme.COLORS.GREEN_700
+// }));
