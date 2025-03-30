@@ -15,22 +15,31 @@ export const Container = styled(TouchableOpacity)<Props>`
   min-height: 56px;
   max-height: 56px;
 
-  background-color: ${({ theme, type }: { theme: DefaultTheme; type: ButtonTypeStyleProps }) =>
-    type === "PRIMARY" ? theme.COLORS.GREEN_700 : theme.COLORS.RED_DARK};
+  background-color: ${({
+    theme,
+    type,
+  }: {
+    theme: DefaultTheme;
+    type: ButtonTypeStyleProps;
+  }) => (type === "PRIMARY" ? theme.COLORS.GREEN_700 : theme.COLORS.RED_DARK)};
 
   border-radius: 6px;
 
   justify-content: center;
   align-items: center;
 
-  ${({disabled}: {disabled: boolean}) => disabled && css`
-    background-color: ${({theme}: {theme: DefaultTheme}) => theme.COLORS.GRAY_400};
-  `}
+  ${({ disabled }: { disabled: boolean }) =>
+    disabled &&
+    css`
+      background-color: ${({ theme }: { theme: DefaultTheme }) =>
+        theme.COLORS.GRAY_400};
+    `}
 `;
 
 export const Title = styled.Text`
-  font-size: ${({ theme }: { theme: DefaultTheme }) => theme.FONT_SIZE.MD}px;
-  color: ${({ theme }: { theme: DefaultTheme }) => theme.COLORS.WHITE};
-  font-family: ${({ theme }: { theme: DefaultTheme }) =>
-    theme.FONT_FAMILY.BOLD};
+  ${(theme: DefaultTheme) => css`
+    font-size: ${theme.FONT_SIZE.MD}px;
+    font-family: ${theme.FONT_FAMILY.BOLD};
+    color: ${theme.COLORS.WHITE};
+  `}
 `;
