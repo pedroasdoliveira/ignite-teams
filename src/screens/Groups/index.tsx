@@ -12,7 +12,7 @@ import ListEmpty from "@components/ListEmpty";
 import Button from "@components/Button";
 
 export function Groups() {
-  const [groups, setGroups] = useState<string[]>(["Galera do Java", "Amigos"]);
+  const [groups, setGroups] = useState<string[]>([]);
 
   const navigation = useNavigation();
 
