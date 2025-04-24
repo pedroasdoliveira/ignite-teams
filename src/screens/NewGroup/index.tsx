@@ -1,3 +1,4 @@
+import { useNavigation } from "@react-navigation/native";
 import { Container, Content, Icon } from "./styles";
 
 import Header from "@components/Header";
@@ -6,6 +7,12 @@ import Button from "@components/Button";
 import Input from "@components/Input";
 
 const NewGroup = () => {
+  const navigation = useNavigation();
+
+  const handleNew = () => {
+    navigation.navigate('players', { group: ''});
+  };
+
   return (
     <Container>
       <Header showBackButton />
@@ -20,7 +27,7 @@ const NewGroup = () => {
 
         <Input placeholder="Nome da turma" />
 
-        <Button title="Criar" />
+        <Button title="Criar" onPress={handleNew} />
       </Content>
     </Container>
   );
