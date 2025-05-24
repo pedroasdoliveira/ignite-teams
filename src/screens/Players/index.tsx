@@ -19,6 +19,7 @@ import { playersGetByGroup } from "@storage/player/playersGetByGroup";
 import { playersGetByGroupAndTeam } from "@storage/player/playerAddByGroupAndTeam";
 import { playerRemoveByGroup } from "@storage/player/playerRemoveByGroup";
 import { groupRemoveByName } from "@storage/group/groupRemoveByName";
+import Loading from "@components/Loading";
 
 type RouteParams = {
   group: string;
@@ -27,6 +28,7 @@ type RouteParams = {
 const Players: React.FC = () => {
   const navigation = useNavigation();
 
+  const [isLoading, setIsLoading] = useState(true);
   const [team, setTeam] = useState("Time A");
   const [players, setPlayers] = useState<PlayerStorageDTO[]>([]);
   const [newPlayerName, setNewPlayerName] = useState<string>("");
@@ -69,9 +71,12 @@ const Players: React.FC = () => {
   };
 
   const fetchPlayersByTeam = async () => {
+    setIsLoading(true);
+
     try {
       const playersByTeam = await playersGetByGroupAndTeam(group, team);
       setPlayers(playersByTeam);
+
       return;
     } catch (error) {
       console.error("Error ao buscar players", error);
@@ -79,6 +84,8 @@ const Players: React.FC = () => {
         "Players",
         "Nao foi possível buscar os players do time selecionado."
       );
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -100,17 +107,14 @@ const Players: React.FC = () => {
   const groupRemove = async () => {
     try {
       await groupRemoveByName(group);
-      
+
       navigation.navigate("groups");
       return;
     } catch (error) {
       console.error(error);
-      return Alert.alert(
-        "Remover Grupo",
-        "Nao foi possível remover o grupo."
-      );
+      return Alert.alert("Remover Grupo", "Nao foi possível remover o grupo.");
     }
-  }
+  };
 
   const handleRemoveGroup = async () => {
     Alert.alert("Remover", "Deseja remover o grupo?", [
@@ -120,7 +124,9 @@ const Players: React.FC = () => {
       },
       {
         text: "Sim",
-        onPress: async () => {groupRemove()},
+        onPress: async () => {
+          groupRemove();
+        },
       },
     ]);
   };
@@ -166,29 +172,37 @@ const Players: React.FC = () => {
         <NumberOfPlayers>{players.length}</NumberOfPlayers>
       </HeaderList>
 
-      <FlatList
-        data={players}
-        keyExtractor={(item) => item.name}
-        renderItem={({ item }) => (
-          <PlayerCard
-            icon="person"
-            name={item.name}
-            onRemove={() => {
-              handleRemovePlayer(item.name);
-            }}
-          />
-        )}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={[
-          { paddingBottom: 100 },
-          players.length === 0 && { flex: 1 },
-        ]}
-        ListEmptyComponent={() => (
-          <ListEmpty message="Não há pessoas nesse time." />
-        )}
-      />
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <FlatList
+          data={players}
+          keyExtractor={(item) => item.name}
+          renderItem={({ item }) => (
+            <PlayerCard
+              icon="person"
+              name={item.name}
+              onRemove={() => {
+                handleRemovePlayer(item.name);
+              }}
+            />
+          )}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={[
+            { paddingBottom: 100 },
+            players.length === 0 && { flex: 1 },
+          ]}
+          ListEmptyComponent={() => (
+            <ListEmpty message="Não há pessoas nesse time." />
+          )}
+        />
+      )}
 
-      <Button title="Remover Turma" type="SECONDARY" onPress={handleRemoveGroup} />
+      <Button
+        title="Remover Turma"
+        type="SECONDARY"
+        onPress={handleRemoveGroup}
+      />
     </Container>
   );
 };
