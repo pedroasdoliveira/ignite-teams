@@ -17,6 +17,7 @@ import { AppError } from "@utils/AppError";
 import { playerAddByGroup } from "@storage/player/playerAddByGroup";
 import { playersGetByGroup } from "@storage/player/playersGetByGroup";
 import { playersGetByGroupAndTeam } from "@storage/player/playerAddByGroupAndTeam";
+import { playerRemoveByGroup } from "@storage/player/playerRemoveByGroup";
 
 type RouteParams = {
   group: string;
@@ -78,9 +79,24 @@ const Players: React.FC = () => {
     }
   };
 
+  const handleRemovePlayer = async (playerName: string) => {
+    try {
+      await playerRemoveByGroup(playerName, group);
+      fetchPlayersByTeam();
+
+      return;
+    } catch (error) {
+      console.error("Error ao remover player", error);
+      return Alert.alert(
+        "Remover Player",
+        "Nao foi possível remover o player selecionado."
+      );
+    }
+  };
+
   useEffect(() => {
     fetchPlayersByTeam();
-  }, [team])
+  }, [team]);
 
   return (
     <Container>
@@ -123,7 +139,13 @@ const Players: React.FC = () => {
         data={players}
         keyExtractor={(item) => item.name}
         renderItem={({ item }) => (
-          <PlayerCard icon="person" name={item.name} onRemove={() => {}} />
+          <PlayerCard
+            icon="person"
+            name={item.name}
+            onRemove={() => {
+              handleRemovePlayer(item.name);
+            }}
+          />
         )}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={[
