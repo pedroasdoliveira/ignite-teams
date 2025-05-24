@@ -1,5 +1,5 @@
-import { Alert, FlatList } from "react-native";
-import { useEffect, useState } from "react";
+import { Alert, FlatList, TextInput } from "react-native";
+import { useEffect, useRef, useState } from "react";
 import { useRoute } from "@react-navigation/native";
 
 import { Container, Form, HeaderList, NumberOfPlayers } from "./styles";
@@ -25,23 +25,29 @@ type RouteParams = {
 const Players: React.FC = () => {
   const [team, setTeam] = useState("Time A");
   const [players, setPlayers] = useState<PlayerStorageDTO[]>([]);
-  const [newPalyerName, setNewPlayerName] = useState<string>("");
+  const [newPlayerName, setNewPlayerName] = useState<string>("");
 
   const { params } = useRoute();
   const { group } = params as RouteParams;
 
+  const newPlayerNameInputRef = useRef<TextInput>(null);
+
   const handleAddPlayer = async () => {
-    if (newPalyerName.trim().length === 0) {
+    if (newPlayerName.trim().length === 0) {
       return Alert.alert("Novo Player", "Informe o nome da pessoa.");
     }
 
     const newPlayer: PlayerStorageDTO = {
-      name: newPalyerName,
+      name: newPlayerName,
       team,
     };
 
     try {
       await playerAddByGroup(newPlayer, group);
+
+      newPlayerNameInputRef.current?.blur();
+
+      setNewPlayerName("");
       fetchPlayersByTeam();
 
       return;
@@ -84,9 +90,13 @@ const Players: React.FC = () => {
 
       <Form>
         <Input
+          inputRef={newPlayerNameInputRef}
           onChangeText={setNewPlayerName}
+          value={newPlayerName}
           placeholder="Nome da pessoa"
           autoCorrect={false}
+          onSubmitEditing={handleAddPlayer}
+          returnKeyType="done"
         />
 
         <ButtonIcon icon="add" onPress={handleAddPlayer} />
